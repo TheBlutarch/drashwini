@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Book an Appointment | Karnataka Multi-Speciality Dental Clinic</title>
+  <meta name="description" content="Schedule your offline or tele-consultation appointment online with Dr. Ashwini K.S. Select dates, time slots, complete payment demo, and confirm via WhatsApp.">
+  
+  <!-- CSS Stylesheets -->
+  <link rel="stylesheet" href="style.css">
+  
+  <!-- Remix Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Floating WhatsApp CTA -->
+  <a href="https://wa.me/917022839062?text=Hi%20Dr.%20Ashwini,%20I'm%20visiting%20your%20Booking%20page%20and%20need%20assistance%20scheduling%20an%20appointment." target="_blank" class="whatsapp-float" aria-label="Chat on WhatsApp">
+    <i class="ri-whatsapp-line"></i>
+    <span class="whatsapp-float-ring"></span>
+  </a>
+
+  <!-- Header -->
+  <header class="header header-initial">
+    <div class="container nav-container">
+      <a href="index.html" class="logo-wrapper">
+        <img src="photos/logo.png" alt="KMDS Logo" class="logo-img">
+        <div class="logo-text">
+          KARNATAKA <span class="text-gradient">MULTI-SPECIALITY</span>
+          <span class="logo-subtext">DENTAL CLINIC | Dr. Ashwini K.S</span>
+        </div>
+      </a>
+      
+      <nav>
+        <ul class="nav-links">
+          <li class="nav-item"><a href="index.html">Home</a></li>
+          <li class="nav-item"><a href="about.html">About Us</a></li>
+          <li class="nav-item"><a href="services.html">Our Services</a></li>
+          <li class="nav-item"><a href="resources.html">Resources</a></li>
+          <li class="nav-item active"><a href="book.html">Book Appointment</a></li>
+          <li class="nav-item"><a href="contact.html">Contact Us</a></li>
+          <li class="nav-socials">
+            <a href="https://www.instagram.com/drashwini.dentist/" target="_blank" class="social-icon" aria-label="Instagram"><i class="ri-instagram-line"></i></a>
+            <a href="https://wa.me/917022839062" target="_blank" class="social-icon" aria-label="WhatsApp"><i class="ri-whatsapp-line"></i></a>
+          </li>
+        </ul>
+      </nav>
+
+      <button class="mobile-nav-toggle" aria-label="Toggle Navigation">
+        <i class="ri-menu-line"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- Page Banner -->
+  <div class="page-banner">
+    <div class="container">
+      <h1 class="page-title">Appointment <span class="text-gradient">Scheduler</span></h1>
+      <p class="page-subtitle">Select, customize, and secure your session in under 2 minutes.</p>
+    </div>
+  </div>
+
+  <!-- Booking Flow Section -->
+  <section class="section">
+    <div class="container">
+      <div class="booking-container">
+        
+        <!-- Left: Interactive Scheduler Widget -->
+        <div class="booking-panel glass-panel">
+          
+          <!-- Steps indicators -->
+          <div class="booking-steps-nav">
+            <div class="step-indicator active">1</div>
+            <div class="step-indicator">2</div>
+            <div class="step-indicator">3</div>
+            <div class="step-indicator">4</div>
+            <div class="step-indicator">5</div>
+            <div class="step-indicator">6</div>
+          </div>
+
+          <!-- Form / Wizard Container -->
+          <div class="booking-wizard">
+            
+            <!-- STEP 1: Appointment Type -->
+            <div class="booking-step active">
+              <h3 class="booking-step-title text-gradient">Step 1: Choose Consultation Type</h3>
+              <div class="apt-types-grid">
+                <!-- Option A: In-Clinic -->
+                <div class="apt-type-card glass-panel selected" data-type="in-clinic">
+                  <div class="apt-type-icon">
+                    <i class="ri-hospital-line"></i>
+                  </div>
+                  <h4 class="apt-type-name">In-Clinic Visit</h4>
+                  <p class="apt-type-desc">Consult Dr. Ashwini physically at our sterile clinic in Chitradurga.</p>
+                  <p style="margin-top: 12px; font-weight: 600; color: var(--accent-cyan);">Fee: ₹300</p>
+                </div>
+                
+                <!-- Option B: Tele-consultation -->
+                <div class="apt-type-card glass-panel" data-type="tele-consultation">
+                  <div class="apt-type-icon">
+                    <i class="ri-video-chat-line"></i>
+                  </div>
+                  <h4 class="apt-type-name">Tele-Consultation</h4>
+                  <p class="apt-type-desc">Secure virtual diagnosis via live high-definition video call.</p>
+                  <p style="margin-top: 12px; font-weight: 600; color: var(--accent-cyan);">Fee: ₹500</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- STEP 2: Date Selector -->
+            <div class="booking-step">
+              <h3 class="booking-step-title text-gradient">Step 2: Choose Appointment Date</h3>
+              <div class="calendar-wrapper glass-panel" style="padding: 24px;">
+                <div class="calendar-header">
+                  <button class="btn-back cal-btn-prev" style="visibility: visible; padding: 6px 12px; font-size: 0.9rem;">
+                    <i class="ri-arrow-left-s-line"></i> Prev
+                  </button>
+                  <span class="calendar-month">July 2026</span>
+                  <button class="btn-back cal-btn-next" style="visibility: visible; padding: 6px 12px; font-size: 0.9rem;">
+                    Next <i class="ri-arrow-right-s-line"></i>
+                  </button>
+                </div>
+                <div class="calendar-grid">
+                  <!-- Header and Days populated dynamically by JS -->
+                </div>
+              </div>
+            </div>
+
+            <!-- STEP 3: Time Slot Selector -->
+            <div class="booking-step">
+              <h3 class="booking-step-title text-gradient">Step 3: Choose Time Slot</h3>
+              <p style="color: var(--text-muted); margin-bottom: 20px; font-size: 0.9rem;">Select a preferred time slot. Redundant clinic hours have been updated to professional timings.</p>
+              <div class="slots-container">
+                <!-- Dynamically loaded weekday/sunday time slot nodes -->
+              </div>
+            </div>
+
+            <!-- STEP 4: Patient Info Form -->
+            <div class="booking-step">
+              <h3 class="booking-step-title text-gradient">Step 4: Patient Registration</h3>
+              <div class="patient-form">
+                <div class="form-row">
+                  <div class="form-group">
+                    <label class="form-label" for="pt-name">Full Name *</label>
+                    <input type="text" id="pt-name" class="form-input" placeholder="Enter patient's name" required>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label" for="pt-phone">Mobile Number *</label>
+                    <input type="tel" id="pt-phone" class="form-input" placeholder="10-digit number" maxlength="10" required>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="pt-email">Email Address (Optional)</label>
+                  <input type="email" id="pt-email" class="form-input" placeholder="For receipt delivery">
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="pt-notes">Brief Medical Concern / Symptoms</label>
+                  <textarea id="pt-notes" class="form-input form-textarea" placeholder="E.g., tooth ache in upper jaw, root canal consulting..."></textarea>
+                </div>
+              </div>
+            </div>
+
+            <!-- STEP 5: Payment Screen -->
+            <div class="booking-step">
+              <h3 class="booking-step-title text-gradient">Step 5: Secure Payment Simulation</h3>
+              <div class="payment-simulation">
+                <div class="payment-cost-breakdown glass-panel">
+                  <div class="payment-row">
+                    <span id="fee-item-name">In-Clinic Consultation Fee</span>
+                    <span id="fee-item-amount" style="font-weight: 600;">₹300</span>
+                  </div>
+                  <div class="payment-row">
+                    <span>GST (Tax Exempted)</span>
+                    <span style="font-weight: 600;">₹0</span>
+                  </div>
+                  <div class="payment-row payment-total">
+                    <span>Total Amount Payable</span>
+                    <span id="fee-total-amount">₹300</span>
+                  </div>
+                </div>
+
+                <!-- Simulated Gold Credit Card Mockup -->
+                <div class="sim-card-wrap">
+                  <div class="sim-gold-card">
+                    <div class="sim-card-logo">KARNATAKA MULTI-SPECIALITY DENTAL CLINIC</div>
+                    <div class="sim-card-chip"></div>
+                    <div class="sim-card-number">••••  ••••  ••••  7022</div>
+                    <div class="sim-card-row">
+                      <div>
+                        <div style="font-size: 0.55rem; color: rgba(255,255,255,0.4);">Card Holder</div>
+                        <div style="font-weight: 600; color: var(--accent-gold); font-size: 0.72rem; letter-spacing: 0.5px;">PATIENT DEMO</div>
+                      </div>
+                      <div style="text-align: right;">
+                        <div style="font-size: 0.55rem; color: rgba(255,255,255,0.4);">Expires</div>
+                        <div style="font-weight: 600; color: var(--accent-gold); font-size: 0.72rem; letter-spacing: 0.5px;">12 / 30</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="payment-methods">
+                  <div class="pay-method-card glass-panel selected" data-method="upi">
+                    <i class="ri-qr-code-line" style="font-size: 1.8rem; color: var(--accent-teal); display: block; margin-bottom: 8px;"></i>
+                    <span style="font-weight: 500;">UPI / QR Code</span>
+                  </div>
+                  <div class="pay-method-card glass-panel" data-method="card">
+                    <i class="ri-bank-card-line" style="font-size: 1.8rem; color: var(--accent-teal); display: block; margin-bottom: 8px;"></i>
+                    <span style="font-weight: 500;">Credit / Debit Card</span>
+                  </div>
+                </div>
+                <p style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: 12px;"><i class="ri-lock-line" style="color: #10b981;"></i> Simulated secure banking environment. No actual money will be charged.</p>
+              </div>
+            </div>
+
+            <!-- STEP 6: Confirmation Screen -->
+            <div class="booking-step">
+              <div class="confirmation-card">
+                <div class="confirmation-icon">
+                  <i class="ri-checkbox-circle-fill"></i>
+                </div>
+                <h3 style="font-size: 1.8rem; font-weight: 700; margin-bottom: 8px;">Appointment Confirmed!</h3>
+                <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 24px;">Your booking request is logged. Please trigger the WhatsApp confirmation below to complete synchronization.</p>
+                
+                <div class="confirm-details-box glass-panel">
+                  <div class="confirm-item">
+                    <span class="confirm-label">Appointment ID</span>
+                    <span class="confirm-val text-gradient" id="conf-id">KMDS-928374</span>
+                  </div>
+                  <div class="confirm-item">
+                    <span class="confirm-label">Consultation</span>
+                    <span class="confirm-val" id="conf-type">In-Clinic Visit</span>
+                  </div>
+                  <div class="confirm-item">
+                    <span class="confirm-label">Scheduled Date</span>
+                    <span class="confirm-val" id="conf-date">Monday, July 13, 2026</span>
+                  </div>
+                  <div class="confirm-item">
+                    <span class="confirm-label">Time Slot</span>
+                    <span class="confirm-val" id="conf-time">10:30 AM</span>
+                  </div>
+                  <div class="confirm-item">
+                    <span class="confirm-label">Patient Name</span>
+                    <span class="confirm-val" id="conf-name">John Doe</span>
+                  </div>
+                  <div class="confirm-item">
+                    <span class="confirm-label">Phone</span>
+                    <span class="confirm-val" id="conf-phone">9876543210</span>
+                  </div>
+                  <div class="confirm-item">
+                    <span class="confirm-label">Paid Via</span>
+                    <span class="confirm-val" id="conf-method">UPI</span>
+                  </div>
+                </div>
+
+                <div style="margin-top: 32px; display: flex; flex-direction: column; gap: 16px; align-items: center;">
+                  <a href="" target="_blank" id="whatsapp-confirm-btn" class="cta-button" style="background: #25d366; box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);">
+                    Confirm on WhatsApp <i class="ri-whatsapp-line"></i>
+                  </a>
+                  <button onclick="window.location.reload();" class="btn-back" style="visibility: visible;">
+                    Book Another Appointment
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Navigation Buttons -->
+            <div class="booking-nav-btns">
+              <button class="btn-back">Back</button>
+              <button class="btn-next">Continue</button>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Right: Clinic Timings & Guidelines Sidebar -->
+        <div class="timings-sidebar glass-panel">
+          <h4>Updated Clinic Hours</h4>
+          <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 20px; line-height: 1.6;">
+            We have revised our hours from the previous overnight logs to standard clinical routines to better serve our patients in Chitradurga.
+          </p>
+          <div class="timings-list">
+            <div class="timing-row">
+              <span class="timing-day">Monday</span>
+              <span class="timing-hours">10:00 AM – 1:30 PM &<br>4:30 PM – 8:30 PM</span>
+            </div>
+            <div class="timing-row">
+              <span class="timing-day">Tuesday</span>
+              <span class="timing-hours">10:00 AM – 1:30 PM &<br>4:30 PM – 8:30 PM</span>
+            </div>
+            <div class="timing-row">
+              <span class="timing-day">Wednesday</span>
+              <span class="timing-hours">10:00 AM – 1:30 PM &<br>4:30 PM – 8:30 PM</span>
+            </div>
+            <div class="timing-row">
+              <span class="timing-day">Thursday</span>
+              <span class="timing-hours">10:00 AM – 1:30 PM &<br>4:30 PM – 8:30 PM</span>
+            </div>
+            <div class="timing-row">
+              <span class="timing-day">Friday</span>
+              <span class="timing-hours">10:00 AM – 1:30 PM &<br>4:30 PM – 8:30 PM</span>
+            </div>
+            <div class="timing-row">
+              <span class="timing-day">Saturday</span>
+              <span class="timing-hours">10:00 AM – 1:30 PM &<br>4:30 PM – 8:30 PM</span>
+            </div>
+            <div class="timing-row">
+              <span class="timing-day">Sunday</span>
+              <span class="timing-hours">
+                10:00 AM – 1:30 PM<br>
+                <span class="timing-badge-sunday">Appointment Only</span>
+              </span>
+            </div>
+          </div>
+          
+          <h4 style="margin-top: 40px;">Clinical Instructions</h4>
+          <ul style="color: var(--text-muted); font-size: 0.85rem; padding-left: 18px; line-height: 1.8;">
+            <li>Please arrive 10 minutes prior to physical clinic bookings.</li>
+            <li>For Tele-consultation, check your internet connectivity and look for the connection coordinates sent via SMS.</li>
+            <li>You can reschedule appointments up to 2 hours in advance by contacting support.</li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Google Maps Iframe Section -->
+  <section class="map-section">
+    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3869.6961448834925!2d76.39801831122119!3d14.218596686311652!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bb7e2f5b5b29b63%3A0x387fc0ea6b8f48a!2sKarnataka%20Multi-speciality%20Dental%20Clinic!5e0!3m2!1sen!2sin!4v1717000000000!5m2!1sen!2sin" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Karnataka Multi-speciality Dental Clinic Location Map"></iframe>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-topline"><div><span>Need help booking?</span><h2>We’re ready to welcome you.</h2></div><a href="tel:+917022839062" class="cta-button">Call the clinic <i class="ri-phone-line"></i></a></div>
+      <div class="footer-grid">
+        <div class="footer-col footer-about">
+          <div class="logo-wrapper" style="margin-bottom: 20px;">
+            <img src="photos/logo.png" alt="KMDS Logo" class="logo-img">
+            <div class="logo-text">
+              KARNATAKA <span class="text-gradient">MULTI-SPECIALITY</span>
+              <span class="logo-subtext">DENTAL CLINIC</span>
+            </div>
+          </div>
+          <p>Excellence, compassion, and advanced technology under one roof. Led by Dr. Ashwini K.S, MDS. We deliver standard and specialized dental care you can count on.</p>
+        </div>
+        
+        <div class="footer-col">
+          <h4>Quick Links</h4>
+          <ul class="footer-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="services.html">Our Services</a></li>
+            <li><a href="resources.html">Resources & Quiz</a></li>
+            <li><a href="book.html">Book Appointment</a></li>
+            <li><a href="contact.html">Contact Us</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-col">
+          <h4>Clinic Address</h4>
+          <p style="color: var(--text-muted); font-size: 0.92rem; margin-bottom: 16px; line-height: 1.8;">
+            <i class="ri-map-pin-line" style="color: var(--accent-cyan); margin-right: 8px;"></i>
+            Davalagiri EXTN, Bheemasamudra Road,<br>
+            Opp. Arvind Garments, Holalkere Road,<br>
+            Chitradurga, Karnataka - 577501
+          </p>
+          <p style="color: var(--text-muted); font-size: 0.92rem;">
+            <i class="ri-phone-line" style="color: var(--accent-cyan); margin-right: 8px;"></i>
+            Phone: <a href="tel:+917022839062" style="color: var(--text-main); font-weight: 500;">+91 70228 39062</a>
+          </p>
+          <p style="color: var(--text-muted); font-size: 0.92rem; margin-top: 8px;">
+            <i class="ri-mail-line" style="color: var(--accent-cyan); margin-right: 8px;"></i>
+            Email: <a href="mailto:drashwini.dentist@gmail.com" style="color: var(--text-main); font-weight: 500;">drashwini.dentist@gmail.com</a>
+          </p>
+        </div>
+      </div>
+      
+      <div class="footer-bottom">
+        <p class="footer-copyright">&copy; 2026 Karnataka Multi-Speciality Dental Clinic. All Rights Reserved. Smile Designing & Endodontics Specialty.</p>
+        <div class="nav-socials">
+          <a href="https://www.instagram.com/drashwini.dentist/" target="_blank" class="social-icon" aria-label="Instagram"><i class="ri-instagram-line"></i></a>
+          <a href="https://wa.me/917022839062" target="_blank" class="social-icon" aria-label="WhatsApp"><i class="ri-whatsapp-line"></i></a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- JS Scripts -->
+  <script src="app.js"></script>
+</body>
+</html>
