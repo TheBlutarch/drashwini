@@ -147,7 +147,7 @@ document.addEventListener('DOMContentLoaded', () => {
       email: '',
       notes: '',
       payment: 'upi', // default
-      fee: 300 // default
+      fee: 1 // default
     };
 
     // Update Navigation UI
@@ -207,15 +207,15 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Fee adjustment
         if (bookingData.type === 'tele-consultation') {
-          bookingData.fee = 500;
+          bookingData.fee = 200;
           document.getElementById('fee-item-name').textContent = 'Tele-Consultation Fee';
-          document.getElementById('fee-item-amount').textContent = '₹500';
-          document.getElementById('fee-total-amount').textContent = '₹500';
+          document.getElementById('fee-item-amount').textContent = '₹200';
+          document.getElementById('fee-total-amount').textContent = '₹200';
         } else {
-          bookingData.fee = 300;
+          bookingData.fee = 1;
           document.getElementById('fee-item-name').textContent = 'In-Clinic Consultation Fee';
-          document.getElementById('fee-item-amount').textContent = '₹300';
-          document.getElementById('fee-total-amount').textContent = '₹300';
+          document.getElementById('fee-item-amount').textContent = '₹1';
+          document.getElementById('fee-total-amount').textContent = '₹1';
         }
       });
     });
@@ -269,38 +269,31 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const cellDate = new Date(year, month, day);
         
-        // Disable past dates
+        // Disable past dates and weekends (Sat/Sun)
         if (cellDate.setHours(0,0,0,0) < today.setHours(0,0,0,0)) {
           cell.classList.add('disabled');
+        } else if (cellDate.getDay() === 0 || cellDate.getDay() === 6) {
+          cell.classList.add('disabled');
+          cell.classList.add('weekend-day');
         } else {
-          // Check Sunday
-          if (cellDate.getDay() === 0) {
-            cell.classList.add('sunday-day');
-          }
-          
           // Mark today
           if (day === today.getDate() && month === today.getMonth() && year === today.getFullYear()) {
             cell.classList.add('today');
           }
-
+          
           // Restore selection
           const formattedCellDate = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
           if (bookingData.date === formattedCellDate) {
             cell.classList.add('selected');
           }
-
+          
           // Click handler
           cell.addEventListener('click', () => {
             calendarGrid.querySelectorAll('.cal-day').forEach(c => c.classList.remove('selected'));
             cell.classList.add('selected');
             bookingData.date = formattedCellDate;
             
-            // If Sunday, alert user or suggest morning hours
-            if (cellDate.getDay() === 0) {
-              alert("Please note: Sundays are by Appointment Only. Slot availability may vary.");
-            }
-            
-            generateSlots(cellDate.getDay() === 0);
+            generateSlots();
           });
         }
         calendarGrid.appendChild(cell);
@@ -339,19 +332,15 @@ document.addEventListener('DOMContentLoaded', () => {
     // Step 3 Selection: Time Slots
     const slotsGrid = document.querySelector('.slots-container');
     
-    const generateSlots = (isSunday = false) => {
+    const generateSlots = () => {
       slotsGrid.innerHTML = '';
       
       const weekdaySlots = [
-        '10:00 AM', '10:30 AM', '11:00 AM', '11:30 AM', '12:00 PM', '12:30 PM', '01:00 PM',
-        '04:30 PM', '05:00 PM', '05:30 PM', '06:00 PM', '06:30 PM', '07:00 PM', '07:30 PM', '08:00 PM'
+        '12:00 PM', '12:30 PM', '01:00 PM', '01:30 PM',
+        '05:00 PM', '05:30 PM', '06:00 PM', '06:30 PM', '07:00 PM', '07:30 PM'
       ];
       
-      const sundaySlots = [
-        '10:00 AM', '10:30 AM', '11:00 AM', '11:30 AM', '12:00 PM', '12:30 PM', '01:00 PM'
-      ];
-
-      const activeSlots = isSunday ? sundaySlots : weekdaySlots;
+      const activeSlots = weekdaySlots;
 
       activeSlots.forEach(timeStr => {
         const btn = document.createElement('div');
@@ -373,7 +362,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // Trigger initial slots populate
-    generateSlots(false);
+    generateSlots();
 
     // Step 5 Selection: Payment Method
     const payMethodCards = document.querySelectorAll('.pay-method-card');
