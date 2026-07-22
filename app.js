@@ -145,6 +145,7 @@ document.addEventListener('DOMContentLoaded', () => {
       name: '',
       phone: '',
       email: '',
+      gender: '',
       notes: '',
       payment: 'upi', // default
       fee: 1 // default
@@ -449,6 +450,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const nameInput = document.getElementById('pt-name');
         const phoneInput = document.getElementById('pt-phone');
         const emailInput = document.getElementById('pt-email');
+        const genderInput = document.getElementById('pt-gender');
         const notesInput = document.getElementById('pt-notes');
         
         if (!nameInput.value.trim()) {
@@ -461,10 +463,22 @@ document.addEventListener('DOMContentLoaded', () => {
           phoneInput.focus();
           return false;
         }
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailInput.value.trim() || !emailRegex.test(emailInput.value.trim())) {
+          alert('Please enter a valid email address.');
+          emailInput.focus();
+          return false;
+        }
+        if (!genderInput.value) {
+          alert('Please select your gender.');
+          genderInput.focus();
+          return false;
+        }
         
         bookingData.name = nameInput.value.trim();
         bookingData.phone = phoneInput.value.trim();
         bookingData.email = emailInput.value.trim();
+        bookingData.gender = genderInput.value;
         bookingData.notes = notesInput.value.trim();
       }
       return true;
@@ -508,13 +522,19 @@ document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('conf-date').textContent = niceDate;
       document.getElementById('conf-time').textContent = bookingData.time;
       document.getElementById('conf-name').textContent = bookingData.name;
+      if (document.getElementById('conf-gender')) {
+        document.getElementById('conf-gender').textContent = bookingData.gender;
+      }
       document.getElementById('conf-phone').textContent = bookingData.phone;
+      if (document.getElementById('conf-email')) {
+        document.getElementById('conf-email').textContent = bookingData.email;
+      }
       document.getElementById('conf-method').textContent = bookingData.payment.toUpperCase();
 
       // Configure WhatsApp button
       const waBtn = document.getElementById('whatsapp-confirm-btn');
       if (waBtn) {
-        const textMsg = `Hi Dr. Ashwini,%0A%0AI would like to confirm my dental appointment.%0A%0A*Booking Details:*%0A- *Appointment ID:* ${bId}%0A- *Type:* ${bookingData.type === 'tele-consultation' ? 'Tele-Consultation (Virtual)' : 'In-Clinic (Offline)'}%0A- *Date:* ${niceDate}%0A- *Time:* ${bookingData.time}%0A- *Patient Name:* ${bookingData.name}%0A- *Phone:* ${bookingData.phone}%0A%0APlease let me know if there are any updates. Thank you!`;
+        const textMsg = `Hi Dr. Ashwini,%0A%0AI would like to confirm my dental appointment.%0A%0A*Booking Details:*%0A- *Appointment ID:* ${bId}%0A- *Type:* ${bookingData.type === 'tele-consultation' ? 'Tele-Consultation (Virtual)' : 'In-Clinic (Offline)'}%0A- *Date:* ${niceDate}%0A- *Time:* ${bookingData.time}%0A- *Patient Name:* ${bookingData.name}%0A- *Gender:* ${bookingData.gender}%0A- *Phone:* ${bookingData.phone}%0A- *Email:* ${bookingData.email}%0A%0APlease let me know if there are any updates. Thank you!`;
         waBtn.href = `https://wa.me/917022839062?text=${textMsg}`;
       }
     };
