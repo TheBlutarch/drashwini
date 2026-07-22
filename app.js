@@ -217,6 +217,11 @@ document.addEventListener('DOMContentLoaded', () => {
           document.getElementById('fee-item-amount').textContent = '₹1';
           document.getElementById('fee-total-amount').textContent = '₹1';
         }
+
+        // Re-fetch slots if date is selected
+        if (bookingData.date) {
+          generateSlots();
+        }
       });
     });
 
@@ -329,36 +334,85 @@ document.addEventListener('DOMContentLoaded', () => {
 
     generateCalendar(displayMonth, displayYear);
 
-    // Step 3 Selection: Time Slots
+    // Helper to format "13:30:00" -> "01:30 PM"
+    const formatTime12h = (timeStr) => {
+      if (!timeStr) return '';
+      const parts = timeStr.split(':');
+      let h = parseInt(parts[0], 10);
+      const m = parts[1];
+      const ampm = h >= 12 ? 'PM' : 'AM';
+      h = h % 12;
+      if (h === 0) h = 12;
+      return `${String(h).padStart(2, '0')}:${m} ${ampm}`;
+    };
+
+    // Step 3 Selection: Time Slots (from Backend API)
     const slotsGrid = document.querySelector('.slots-container');
     
-    const generateSlots = () => {
+    const generateSlots = async () => {
+      if (!slotsGrid) return;
       slotsGrid.innerHTML = '';
       
-      const weekdaySlots = [
-        '12:00 PM', '12:30 PM', '01:00 PM', '01:30 PM',
-        '05:00 PM', '05:30 PM', '06:00 PM', '06:30 PM', '07:00 PM', '07:30 PM'
-      ];
+      if (!bookingData.date) {
+        slotsGrid.innerHTML = '<p style="color: var(--text-muted); grid-column: 1 / -1; font-size: 0.9rem;">Please select a date to view available time slots.</p>';
+        return;
+      }
       
-      const activeSlots = weekdaySlots;
-
-      activeSlots.forEach(timeStr => {
-        const btn = document.createElement('div');
-        btn.className = 'slot-btn';
-        btn.textContent = timeStr;
+      slotsGrid.innerHTML = '<p style="color: var(--text-muted); grid-column: 1 / -1; font-size: 0.9rem;">Loading available slots...</p>';
+      
+      const practitioner = 'HLC-PRAC-2026-00001';
+      const appointmentType = bookingData.type === 'tele-consultation' ? 'HLC-PRAC-2026-00001_vc' : 'HLC-PRAC-2026-00001';
+      const dateStr = bookingData.date;
+      const duration = 15;
+      
+      const url = `http://localhost:8004/api/v1/appointments/slots/range?practitioner=${encodeURIComponent(practitioner)}&start_date=${dateStr}&end_date=${dateStr}&appointment_type=${encodeURIComponent(appointmentType)}&duration=${duration}`;
+      
+      try {
+        const res = await fetch(url);
+        const data = await res.json();
         
-        if (bookingData.time === timeStr) {
-          btn.classList.add('selected');
+        slotsGrid.innerHTML = '';
+        
+        const dayData = data.slots_by_date && data.slots_by_date[dateStr];
+        const availableSlots = (dayData && dayData.available_slots) || [];
+        const bookedSlots = (dayData && dayData.booked_slots) || [];
+        
+        if (availableSlots.length === 0 && bookedSlots.length === 0) {
+          slotsGrid.innerHTML = '<p style="color: var(--text-muted); grid-column: 1 / -1; font-size: 0.9rem;">No slots available for the selected date.</p>';
+          return;
         }
-
-        btn.addEventListener('click', () => {
-          slotsGrid.querySelectorAll('.slot-btn').forEach(b => b.classList.remove('selected'));
-          btn.classList.add('selected');
-          bookingData.time = timeStr;
+        
+        const availableList = availableSlots.map(s => ({ ...s, isBooked: false }));
+        const bookedList = bookedSlots.map(s => ({ ...s, isBooked: true }));
+        const allSlots = [...availableList, ...bookedList].sort((a, b) => a.start_time.localeCompare(b.start_time));
+        
+        allSlots.forEach(slot => {
+          const btn = document.createElement('div');
+          const formattedTime = formatTime12h(slot.start_time);
+          btn.className = 'slot-btn';
+          btn.textContent = formattedTime;
+          
+          if (slot.isBooked) {
+            btn.classList.add('disabled');
+            btn.title = 'Slot Already Booked';
+          } else {
+            if (bookingData.time === formattedTime) {
+              btn.classList.add('selected');
+            }
+            
+            btn.addEventListener('click', () => {
+              slotsGrid.querySelectorAll('.slot-btn').forEach(b => b.classList.remove('selected'));
+              btn.classList.add('selected');
+              bookingData.time = formattedTime;
+            });
+          }
+          
+          slotsGrid.appendChild(btn);
         });
-
-        slotsGrid.appendChild(btn);
-      });
+      } catch (err) {
+        console.error('Error fetching appointment slots:', err);
+        slotsGrid.innerHTML = '<p style="color: var(--error-red, #ef4444); grid-column: 1 / -1; font-size: 0.9rem;">Unable to load time slots. Please ensure the backend server is running.</p>';
+      }
     };
 
     // Trigger initial slots populate
