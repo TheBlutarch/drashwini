@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-  
+
   // =========================================================================
   // 1. Scroll-Responsive Header
   // =========================================================================
@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // =========================================================================
   const navToggle = document.querySelector('.mobile-nav-toggle');
   const navLinks = document.querySelector('.nav-links');
-  
+
   if (navToggle && navLinks) {
     navToggle.addEventListener('click', (e) => {
       e.stopPropagation();
@@ -65,21 +65,21 @@ document.addEventListener('DOMContentLoaded', () => {
   const slides = document.querySelectorAll('.review-slide');
   const prevBtn = document.querySelector('.slider-btn-prev');
   const nextBtn = document.querySelector('.slider-btn-next');
-  
+
   if (slider && slides.length > 0) {
     let currentSlide = 0;
-    
+
     const updateSlider = () => {
       slider.style.transform = `translateX(-${currentSlide * 100}%)`;
     };
-    
+
     if (nextBtn) {
       nextBtn.addEventListener('click', () => {
         currentSlide = (currentSlide + 1) % slides.length;
         updateSlider();
       });
     }
-    
+
     if (prevBtn) {
       prevBtn.addEventListener('click', () => {
         currentSlide = (currentSlide - 1 + slides.length) % slides.length;
@@ -114,7 +114,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (container) {
         const shortText = container.querySelector('.review-text-short');
         const fullText = container.querySelector('.review-text-full');
-        
+
         if (fullText.style.display === 'inline' || fullText.style.display === 'block') {
           fullText.style.display = 'none';
           shortText.style.display = 'inline';
@@ -135,7 +135,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const stepIndicators = document.querySelectorAll('.step-indicator');
   const btnNext = document.querySelector('.btn-next');
   const btnBack = document.querySelector('.btn-back');
-  
+
   if (bookingSteps.length > 0) {
     let currentStep = 0;
     const bookingData = {
@@ -205,7 +205,7 @@ document.addEventListener('DOMContentLoaded', () => {
         aptTypeCards.forEach(c => c.classList.remove('selected'));
         card.classList.add('selected');
         bookingData.type = card.dataset.type;
-        
+
         // Fee adjustment
         if (bookingData.type === 'tele-consultation') {
           bookingData.fee = 200;
@@ -240,7 +240,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const generateCalendar = (month, year) => {
       calendarMonthLabel.textContent = `${months[month]} ${year}`;
-      
+
       // Clear previous dates (except headers)
       const dateCells = calendarGrid.querySelectorAll('.cal-day, .cal-day-label');
       dateCells.forEach(cell => cell.remove());
@@ -274,9 +274,9 @@ document.addEventListener('DOMContentLoaded', () => {
         cell.textContent = day;
 
         const cellDate = new Date(year, month, day);
-        
+
         // Disable past dates and weekends (Sat/Sun)
-        if (cellDate.setHours(0,0,0,0) < today.setHours(0,0,0,0)) {
+        if (cellDate.setHours(0, 0, 0, 0) < today.setHours(0, 0, 0, 0)) {
           cell.classList.add('disabled');
         } else if (cellDate.getDay() === 0 || cellDate.getDay() === 6) {
           cell.classList.add('disabled');
@@ -286,19 +286,19 @@ document.addEventListener('DOMContentLoaded', () => {
           if (day === today.getDate() && month === today.getMonth() && year === today.getFullYear()) {
             cell.classList.add('today');
           }
-          
+
           // Restore selection
           const formattedCellDate = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
           if (bookingData.date === formattedCellDate) {
             cell.classList.add('selected');
           }
-          
+
           // Click handler
           cell.addEventListener('click', () => {
             calendarGrid.querySelectorAll('.cal-day').forEach(c => c.classList.remove('selected'));
             cell.classList.add('selected');
             bookingData.date = formattedCellDate;
-            
+
             generateSlots();
           });
         }
@@ -349,50 +349,50 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Step 3 Selection: Time Slots (from Backend API)
     const slotsGrid = document.querySelector('.slots-container');
-    
+
     const generateSlots = async () => {
       if (!slotsGrid) return;
       slotsGrid.innerHTML = '';
-      
+
       if (!bookingData.date) {
         slotsGrid.innerHTML = '<p style="color: var(--text-muted); grid-column: 1 / -1; font-size: 0.9rem;">Please select a date to view available time slots.</p>';
         return;
       }
-      
+
       slotsGrid.innerHTML = '<p style="color: var(--text-muted); grid-column: 1 / -1; font-size: 0.9rem;">Loading available slots...</p>';
-      
+
       const practitioner = 'HLC-PRAC-2026-00001';
-      const appointmentType = bookingData.type === 'tele-consultation' ? 'HLC-PRAC-2026-00001_vc' : 'HLC-PRAC-2026-00001';
+      const appointmentType = bookingData.type === 'tele-consultation' ? 'consultation_vc' : 'consultation';
       const dateStr = bookingData.date;
       const duration = 15;
-      
-      const url = `http://localhost:8004/api/v1/appointments/slots/range?practitioner=${encodeURIComponent(practitioner)}&start_date=${dateStr}&end_date=${dateStr}&appointment_type=${encodeURIComponent(appointmentType)}&duration=${duration}`;
-      
+
+      const url = `https://b2b.askdocse.com/api/v1/appointments/slots/range?practitioner=${encodeURIComponent(practitioner)}&start_date=${dateStr}&end_date=${dateStr}&appointment_type=${encodeURIComponent(appointmentType)}&duration=${duration}`;
+
       try {
         const res = await fetch(url);
         const data = await res.json();
-        
+
         slotsGrid.innerHTML = '';
-        
+
         const dayData = data.slots_by_date && data.slots_by_date[dateStr];
         const availableSlots = (dayData && dayData.available_slots) || [];
         const bookedSlots = (dayData && dayData.booked_slots) || [];
-        
+
         if (availableSlots.length === 0 && bookedSlots.length === 0) {
           slotsGrid.innerHTML = '<p style="color: var(--text-muted); grid-column: 1 / -1; font-size: 0.9rem;">No slots available for the selected date.</p>';
           return;
         }
-        
+
         const availableList = availableSlots.map(s => ({ ...s, isBooked: false }));
         const bookedList = bookedSlots.map(s => ({ ...s, isBooked: true }));
         const allSlots = [...availableList, ...bookedList].sort((a, b) => a.start_time.localeCompare(b.start_time));
-        
+
         allSlots.forEach(slot => {
           const btn = document.createElement('div');
           const formattedTime = formatTime12h(slot.start_time);
           btn.className = 'slot-btn';
           btn.textContent = formattedTime;
-          
+
           if (slot.isBooked) {
             btn.classList.add('disabled');
             btn.title = 'Slot Already Booked';
@@ -400,14 +400,14 @@ document.addEventListener('DOMContentLoaded', () => {
             if (bookingData.time === formattedTime) {
               btn.classList.add('selected');
             }
-            
+
             btn.addEventListener('click', () => {
               slotsGrid.querySelectorAll('.slot-btn').forEach(b => b.classList.remove('selected'));
               btn.classList.add('selected');
               bookingData.time = formattedTime;
             });
           }
-          
+
           slotsGrid.appendChild(btn);
         });
       } catch (err) {
@@ -452,7 +452,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const emailInput = document.getElementById('pt-email');
         const genderInput = document.getElementById('pt-gender');
         const notesInput = document.getElementById('pt-notes');
-        
+
         if (!nameInput.value.trim()) {
           alert('Please enter your name.');
           nameInput.focus();
@@ -474,7 +474,7 @@ document.addEventListener('DOMContentLoaded', () => {
           genderInput.focus();
           return false;
         }
-        
+
         bookingData.name = nameInput.value.trim();
         bookingData.phone = phoneInput.value.trim();
         bookingData.email = emailInput.value.trim();
@@ -487,14 +487,14 @@ document.addEventListener('DOMContentLoaded', () => {
     // Navigation triggers
     btnNext.addEventListener('click', () => {
       if (!validateStep()) return;
-      
+
       currentStep++;
-      
+
       // Prep Final Step data when stepping into Confirmation
       if (currentStep === bookingSteps.length - 1) {
         completeBookingFlow();
       }
-      
+
       updateBookingUI();
     });
 
@@ -513,12 +513,12 @@ document.addEventListener('DOMContentLoaded', () => {
       // Populate text nodes
       document.getElementById('conf-id').textContent = bId;
       document.getElementById('conf-type').textContent = bookingData.type === 'tele-consultation' ? 'Tele-Consultation (Virtual)' : 'In-Clinic Consultation';
-      
+
       // Format Date nicely
       const dateParts = bookingData.date.split('-');
       const dObj = new Date(dateParts[0], dateParts[1] - 1, dateParts[2]);
       const niceDate = dObj.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-      
+
       document.getElementById('conf-date').textContent = niceDate;
       document.getElementById('conf-time').textContent = bookingData.time;
       document.getElementById('conf-name').textContent = bookingData.name;
