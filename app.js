@@ -359,7 +359,12 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
-      slotsGrid.innerHTML = '<p style="color: var(--text-muted); grid-column: 1 / -1; font-size: 0.9rem;">Loading available slots...</p>';
+      slotsGrid.innerHTML = `
+        <div class="slots-loading">
+          <div class="slots-spinner"></div>
+          <span>Fetching available slots...</span>
+        </div>
+      `;
 
       const practitioner = 'HLC-PRAC-2026-00001';
       const appointmentType = bookingData.type === 'tele-consultation' ? 'consultation_vc' : 'consultation';
@@ -409,6 +414,9 @@ document.addEventListener('DOMContentLoaded', () => {
           }
 
           slotsGrid.appendChild(btn);
+          btn.addEventListener('click', () => {
+            bookingData.rawTime = slot.start_time;
+          });
         });
       } catch (err) {
         console.error('Error fetching appointment slots:', err);
@@ -485,16 +493,16 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // Navigation triggers
-    btnNext.addEventListener('click', () => {
+    btnNext.addEventListener('click', async () => {
       if (!validateStep()) return;
 
-      currentStep++;
-
-      // Prep Final Step data when stepping into Confirmation
-      if (currentStep === bookingSteps.length - 1) {
-        completeBookingFlow();
+      // Handle step before Confirmation (Pay & Confirm)
+      if (currentStep === bookingSteps.length - 2) {
+        await submitBookingApi();
+        return;
       }
 
+      currentStep++;
       updateBookingUI();
     });
 
@@ -505,37 +513,57 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
 
-    // Complete Booking Process & Output Confirmation
-    const completeBookingFlow = () => {
-      const bId = 'KMDS-' + Math.floor(100000 + Math.random() * 900000);
-      bookingData.bookingId = bId;
+    // API submission and payment redirect
+    const submitBookingApi = async () => {
+      const originalText = btnNext.textContent;
+      btnNext.disabled = true;
+      btnNext.textContent = 'Processing...';
 
-      // Populate text nodes
-      document.getElementById('conf-id').textContent = bId;
-      document.getElementById('conf-type').textContent = bookingData.type === 'tele-consultation' ? 'Tele-Consultation (Virtual)' : 'In-Clinic Consultation';
-
-      // Format Date nicely
-      const dateParts = bookingData.date.split('-');
-      const dObj = new Date(dateParts[0], dateParts[1] - 1, dateParts[2]);
-      const niceDate = dObj.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-
-      document.getElementById('conf-date').textContent = niceDate;
-      document.getElementById('conf-time').textContent = bookingData.time;
-      document.getElementById('conf-name').textContent = bookingData.name;
-      if (document.getElementById('conf-gender')) {
-        document.getElementById('conf-gender').textContent = bookingData.gender;
+      let formattedPhone = bookingData.phone;
+      if (!formattedPhone.startsWith('+')) {
+        formattedPhone = '+91' + formattedPhone.replace(/^0+/, '');
       }
-      document.getElementById('conf-phone').textContent = bookingData.phone;
-      if (document.getElementById('conf-email')) {
-        document.getElementById('conf-email').textContent = bookingData.email;
-      }
-      document.getElementById('conf-method').textContent = bookingData.payment.toUpperCase();
 
-      // Configure WhatsApp button
-      const waBtn = document.getElementById('whatsapp-confirm-btn');
-      if (waBtn) {
-        const textMsg = `Hi Dr. Ashwini,%0A%0AI would like to confirm my dental appointment.%0A%0A*Booking Details:*%0A- *Appointment ID:* ${bId}%0A- *Type:* ${bookingData.type === 'tele-consultation' ? 'Tele-Consultation (Virtual)' : 'In-Clinic (Offline)'}%0A- *Date:* ${niceDate}%0A- *Time:* ${bookingData.time}%0A- *Patient Name:* ${bookingData.name}%0A- *Gender:* ${bookingData.gender}%0A- *Phone:* ${bookingData.phone}%0A- *Email:* ${bookingData.email}%0A%0APlease let me know if there are any updates. Thank you!`;
-        waBtn.href = `https://wa.me/917022839062?text=${textMsg}`;
+      const payload = {
+        customer: {
+          name: bookingData.name,
+          phone: formattedPhone,
+          email: bookingData.email,
+          gender: bookingData.gender
+        },
+        practitioner_id: 'HLC-PRAC-2026-00001',
+        appointment_date: bookingData.date,
+        appointment_time: bookingData.rawTime || bookingData.time,
+        appointment_type: bookingData.type === 'tele-consultation' ? 'consultation_vc' : 'consultation',
+        complaint: bookingData.notes || 'General consultation'
+      };
+
+      try {
+        const response = await fetch('https://b2b.askdocse.com/api/v1/appointments/book', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(payload)
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({}));
+          throw new Error(errorData.detail || errorData.message || 'Failed to book appointment.');
+        }
+
+        const data = await response.json();
+        if (data && data.payment_url) {
+          window.location.href = data.payment_url;
+        } else {
+          alert('Booking processed, but no payment URL returned.');
+        }
+      } catch (err) {
+        console.error('Booking error:', err);
+        alert('Failed to process booking: ' + err.message);
+      } finally {
+        btnNext.disabled = false;
+        btnNext.textContent = originalText;
       }
     };
 

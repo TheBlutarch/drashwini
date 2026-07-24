@@ -1399,6 +1399,33 @@ button, input, select, textarea {
   gap: 12px;
 }
 
+.slots-loading {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 30px 0;
+  color: var(--text-muted);
+  gap: 12px;
+  font-size: 0.9rem;
+}
+
+.slots-spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid rgba(13, 148, 136, 0.15);
+  border-top-color: var(--accent-teal);
+  border-radius: 50%;
+  animation: slotsSpin 0.8s linear infinite;
+}
+
+@keyframes slotsSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 .slot-btn {
   padding: 12px 8px;
   background: var(--bg-primary);
