@@ -147,7 +147,6 @@ document.addEventListener('DOMContentLoaded', () => {
       email: '',
       gender: '',
       notes: '',
-      payment: 'upi', // default
       fee: 1 // default
     };
 
@@ -443,16 +442,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // Trigger initial slots populate
     generateSlots();
 
-    // Step 5 Selection: Payment Method
-    const payMethodCards = document.querySelectorAll('.pay-method-card');
-    payMethodCards.forEach(card => {
-      card.addEventListener('click', () => {
-        payMethodCards.forEach(c => c.classList.remove('selected'));
-        card.classList.add('selected');
-        bookingData.payment = card.dataset.method;
-      });
-    });
-
     // Validate Steps before moving forward
     const validateStep = () => {
       if (currentStep === 0) {
@@ -565,7 +554,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (!response.ok) {
           const errorData = await response.json().catch(() => ({}));
-          throw new Error(errorData.detail || errorData.message || 'Failed to book appointment.');
+          let msg = 'Failed to book appointment.';
+          if (errorData.detail) {
+            msg = typeof errorData.detail === 'object' ? JSON.stringify(errorData.detail) : errorData.detail;
+          } else if (errorData.message) {
+            msg = typeof errorData.message === 'object' ? JSON.stringify(errorData.message) : errorData.message;
+          }
+          throw new Error(msg);
         }
 
         const data = await response.json();
