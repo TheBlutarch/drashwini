@@ -392,15 +392,29 @@ document.addEventListener('DOMContentLoaded', () => {
         const bookedList = bookedSlots.map(s => ({ ...s, isBooked: true }));
         const allSlots = [...availableList, ...bookedList].sort((a, b) => a.start_time.localeCompare(b.start_time));
 
+        const now = new Date();
+
         allSlots.forEach(slot => {
           const btn = document.createElement('div');
           const formattedTime = formatTime12h(slot.start_time);
           btn.className = 'slot-btn';
           btn.textContent = formattedTime;
 
-          if (slot.isBooked) {
+          // Parse slot time. Handle ISO string vs HH:mm:ss string
+          let slotDateTime;
+          if (slot.start_time && slot.start_time.includes('T')) {
+            slotDateTime = new Date(slot.start_time);
+          } else if (slot.start_time && dateStr) {
+            slotDateTime = new Date(`${dateStr}T${slot.start_time}`);
+          } else {
+            slotDateTime = new Date(slot.start_time);
+          }
+
+          const isPast = !isNaN(slotDateTime.getTime()) && slotDateTime < now;
+
+          if (slot.isBooked || isPast) {
             btn.classList.add('disabled');
-            btn.title = 'Slot Already Booked';
+            btn.title = slot.isBooked ? 'Slot Already Booked' : 'Slot Time Passed';
           } else {
             if (bookingData.time === formattedTime) {
               btn.classList.add('selected');
@@ -415,7 +429,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
           slotsGrid.appendChild(btn);
           btn.addEventListener('click', () => {
-            bookingData.rawTime = slot.start_time;
+            if (!slot.isBooked && !isPast) {
+              bookingData.rawTime = slot.start_time;
+            }
           });
         });
       } catch (err) {
