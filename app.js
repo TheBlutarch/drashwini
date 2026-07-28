@@ -371,7 +371,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const dateStr = bookingData.date;
       const duration = 15;
 
-      const url = `https://b2b.askdocse.com/api/v1/appointments/slots/range?practitioner=${encodeURIComponent(practitioner)}&start_date=${dateStr}&end_date=${dateStr}&appointment_type=${encodeURIComponent(appointmentType)}&duration=${duration}`;
+      const url = `https://b2b.medcortico.com/api/v1/appointments/slots/range?practitioner=${encodeURIComponent(practitioner)}&start_date=${dateStr}&end_date=${dateStr}&appointment_type=${encodeURIComponent(appointmentType)}&duration=${duration}`;
 
       try {
         const res = await fetch(url);
@@ -539,7 +539,7 @@ document.addEventListener('DOMContentLoaded', () => {
       };
 
       try {
-        const response = await fetch('https://b2b.askdocse.com/api/v1/appointments/book', {
+        const response = await fetch('https://b2b.medcortico.com/api/v1/appointments/book', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'

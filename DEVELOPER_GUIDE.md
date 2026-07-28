@@ -6,7 +6,7 @@ This guide provides a lightweight, self-contained reference for developers and L
 
 ## 1. Overview & Key Concepts
 
-* **Base Endpoint**: `https://b2b.askdocse.com/api/v1/appointments/slots/range`
+* **Base Endpoint**: `https://b2b.medcortico.com/api/v1/appointments/slots/range`
 * **Authentication**: None required (Public Endpoint).
 * **Purpose**: Fetches real-time available and booked time slots for a specific practitioner across a date range.
 * **Core Rule for Double-Booking Prevention**: The API returns both `available_slots` and `booked_slots`. Frontend clients **must** visually disable and prevent click interactions on all `booked_slots`.
@@ -110,7 +110,7 @@ async function fetchAndRenderSlots({
     ? 'consultation_vc'
     : 'consultation';
 
-  const url = `https://b2b.askdocse.com/api/v1/appointments/slots/range`
+  const url = `https://b2b.medcortico.com/api/v1/appointments/slots/range`
     + `?practitioner=${encodeURIComponent(practitionerId)}`
     + `&start_date=${selectedDate}`
     + `&end_date=${selectedDate}`
@@ -211,7 +211,7 @@ If you want an LLM agent to integrate this API into another site, use this promp
 
 ```text
 Integrate the practitioner slots API endpoint:
-GET https://b2b.askdocse.com/api/v1/appointments/slots/range?practitioner={PRACTITIONER_ID}&start_date={YYYY-MM-DD}&end_date={YYYY-MM-DD}&appointment_type={TYPE_ID}&duration=15
+GET https://b2b.medcortico.com/api/v1/appointments/slots/range?practitioner={PRACTITIONER_ID}&start_date={YYYY-MM-DD}&end_date={YYYY-MM-DD}&appointment_type={TYPE_ID}&duration=15
 
 Rules:
 1. Set start_date and end_date to the user's selected date.
