@@ -92,7 +92,7 @@
                   </div>
                   <h4 class="apt-type-name">In-Clinic Visit</h4>
                   <p class="apt-type-desc">Consult Dr. Ashwini physically at our sterile clinic in Chitradurga.</p>
-                  <p style="margin-top: 12px; font-weight: 600; color: var(--accent-cyan);">Fee: ₹300</p>
+                  <p style="margin-top: 12px; font-weight: 600; color: var(--accent-cyan);">Fee: ₹1 <span style="font-size: 0.8rem; font-weight: normal; color: var(--text-muted); display: block; margin-top: 4px;">*Booking charge only. Complete payment to be made during consultation.</span></p>
                 </div>
                 
                 <!-- Option B: Tele-consultation -->
@@ -102,7 +102,7 @@
                   </div>
                   <h4 class="apt-type-name">Tele-Consultation</h4>
                   <p class="apt-type-desc">Secure virtual diagnosis via live high-definition video call.</p>
-                  <p style="margin-top: 12px; font-weight: 600; color: var(--accent-cyan);">Fee: ₹500</p>
+                  <p style="margin-top: 12px; font-weight: 600; color: var(--accent-cyan);">Fee: ₹200 <span style="font-size: 0.8rem; font-weight: normal; color: var(--text-muted); display: block; margin-top: 4px;">*Booking charge only. Complete payment to be made during consultation.</span></p>
                 </div>
               </div>
             </div>
@@ -149,9 +149,24 @@
                     <input type="tel" id="pt-phone" class="form-input" placeholder="10-digit number" maxlength="10" required>
                   </div>
                 </div>
-                <div class="form-group">
-                  <label class="form-label" for="pt-email">Email Address (Optional)</label>
-                  <input type="email" id="pt-email" class="form-input" placeholder="For receipt delivery">
+                <div class="form-row">
+                  <div class="form-group">
+                    <label class="form-label" for="pt-email">Email Address *</label>
+                    <input type="email" id="pt-email" class="form-input" placeholder="e.g., patient@example.com" required>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label" for="pt-gender">Gender *</label>
+                    <select id="pt-gender" class="form-input" required style="background: var(--bg-primary);">
+                      <option value="" disabled selected>Select gender</option>
+                      <option value="Male">Male</option>
+                      <option value="Female">Female</option>
+                      <option value="Other">Other</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-info-notice" style="background: rgba(13, 148, 136, 0.08); border-left: 4px solid var(--accent-teal); padding: 12px 16px; border-radius: 8px; margin-bottom: 20px; font-size: 0.85rem; color: var(--text-dark); display: flex; align-items: flex-start; gap: 10px;">
+                  <i class="ri-information-line" style="color: var(--accent-teal); font-size: 1.2rem; margin-top: 2px; flex-shrink: 0;"></i>
+                  <span>Email and mobile number would be used for communication from clinic, teleconsultation link and confirming the booked appointments.</span>
                 </div>
                 <div class="form-group">
                   <label class="form-label" for="pt-notes">Brief Medical Concern / Symptoms</label>
@@ -167,7 +182,7 @@
                 <div class="payment-cost-breakdown glass-panel">
                   <div class="payment-row">
                     <span id="fee-item-name">In-Clinic Consultation Fee</span>
-                    <span id="fee-item-amount" style="font-weight: 600;">₹300</span>
+                    <span id="fee-item-amount" style="font-weight: 600;">₹1</span>
                   </div>
                   <div class="payment-row">
                     <span>GST (Tax Exempted)</span>
@@ -175,40 +190,12 @@
                   </div>
                   <div class="payment-row payment-total">
                     <span>Total Amount Payable</span>
-                    <span id="fee-total-amount">₹300</span>
+                    <span id="fee-total-amount">₹1</span>
                   </div>
                 </div>
+                <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 10px; margin-bottom: 20px; font-style: italic;">*Note: These are booking charges only. Complete payment would have to be made during the consultation.</p>
 
-                <!-- Simulated Gold Credit Card Mockup -->
-                <div class="sim-card-wrap">
-                  <div class="sim-gold-card">
-                    <div class="sim-card-logo">KARNATAKA MULTI-SPECIALITY DENTAL CLINIC</div>
-                    <div class="sim-card-chip"></div>
-                    <div class="sim-card-number">••••  ••••  ••••  7022</div>
-                    <div class="sim-card-row">
-                      <div>
-                        <div style="font-size: 0.55rem; color: rgba(255,255,255,0.4);">Card Holder</div>
-                        <div style="font-weight: 600; color: var(--accent-gold); font-size: 0.72rem; letter-spacing: 0.5px;">PATIENT DEMO</div>
-                      </div>
-                      <div style="text-align: right;">
-                        <div style="font-size: 0.55rem; color: rgba(255,255,255,0.4);">Expires</div>
-                        <div style="font-weight: 600; color: var(--accent-gold); font-size: 0.72rem; letter-spacing: 0.5px;">12 / 30</div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="payment-methods">
-                  <div class="pay-method-card glass-panel selected" data-method="upi">
-                    <i class="ri-qr-code-line" style="font-size: 1.8rem; color: var(--accent-teal); display: block; margin-bottom: 8px;"></i>
-                    <span style="font-weight: 500;">UPI / QR Code</span>
-                  </div>
-                  <div class="pay-method-card glass-panel" data-method="card">
-                    <i class="ri-bank-card-line" style="font-size: 1.8rem; color: var(--accent-teal); display: block; margin-bottom: 8px;"></i>
-                    <span style="font-weight: 500;">Credit / Debit Card</span>
-                  </div>
-                </div>
-                <p style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: 12px;"><i class="ri-lock-line" style="color: #10b981;"></i> Simulated secure banking environment. No actual money will be charged.</p>
+                <p style="color: var(--text-muted); font-size: 0.8rem; margin-top: 16px; margin-bottom: 12px;"><i class="ri-lock-line" style="color: #10b981;"></i> Simulated secure banking environment. No actual money will be charged.</p>
               </div>
             </div>
 
@@ -243,12 +230,16 @@
                     <span class="confirm-val" id="conf-name">John Doe</span>
                   </div>
                   <div class="confirm-item">
+                    <span class="confirm-label">Gender</span>
+                    <span class="confirm-val" id="conf-gender">Male</span>
+                  </div>
+                  <div class="confirm-item">
                     <span class="confirm-label">Phone</span>
                     <span class="confirm-val" id="conf-phone">9876543210</span>
                   </div>
                   <div class="confirm-item">
-                    <span class="confirm-label">Paid Via</span>
-                    <span class="confirm-val" id="conf-method">UPI</span>
+                    <span class="confirm-label">Email</span>
+                    <span class="confirm-val" id="conf-email">patient@example.com</span>
                   </div>
                 </div>
 
@@ -281,34 +272,31 @@
           <div class="timings-list">
             <div class="timing-row">
               <span class="timing-day">Monday</span>
-              <span class="timing-hours">10:00 AM – 1:30 PM &<br>4:30 PM – 8:30 PM</span>
+              <span class="timing-hours">12:00 PM – 2:00 PM &<br>5:00 PM – 8:00 PM</span>
             </div>
             <div class="timing-row">
               <span class="timing-day">Tuesday</span>
-              <span class="timing-hours">10:00 AM – 1:30 PM &<br>4:30 PM – 8:30 PM</span>
+              <span class="timing-hours">12:00 PM – 2:00 PM &<br>5:00 PM – 8:00 PM</span>
             </div>
             <div class="timing-row">
               <span class="timing-day">Wednesday</span>
-              <span class="timing-hours">10:00 AM – 1:30 PM &<br>4:30 PM – 8:30 PM</span>
+              <span class="timing-hours">12:00 PM – 2:00 PM &<br>5:00 PM – 8:00 PM</span>
             </div>
             <div class="timing-row">
               <span class="timing-day">Thursday</span>
-              <span class="timing-hours">10:00 AM – 1:30 PM &<br>4:30 PM – 8:30 PM</span>
+              <span class="timing-hours">12:00 PM – 2:00 PM &<br>5:00 PM – 8:00 PM</span>
             </div>
             <div class="timing-row">
               <span class="timing-day">Friday</span>
-              <span class="timing-hours">10:00 AM – 1:30 PM &<br>4:30 PM – 8:30 PM</span>
+              <span class="timing-hours">12:00 PM – 2:00 PM &<br>5:00 PM – 8:00 PM</span>
             </div>
             <div class="timing-row">
               <span class="timing-day">Saturday</span>
-              <span class="timing-hours">10:00 AM – 1:30 PM &<br>4:30 PM – 8:30 PM</span>
+              <span class="timing-hours" style="color: var(--error-red); font-weight: 600;">Closed</span>
             </div>
             <div class="timing-row">
               <span class="timing-day">Sunday</span>
-              <span class="timing-hours">
-                10:00 AM – 1:30 PM<br>
-                <span class="timing-badge-sunday">Appointment Only</span>
-              </span>
+              <span class="timing-hours" style="color: var(--error-red); font-weight: 600;">Closed</span>
             </div>
           </div>
           

@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-  
+
   // =========================================================================
   // 1. Scroll-Responsive Header
   // =========================================================================
@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // =========================================================================
   const navToggle = document.querySelector('.mobile-nav-toggle');
   const navLinks = document.querySelector('.nav-links');
-  
+
   if (navToggle && navLinks) {
     navToggle.addEventListener('click', (e) => {
       e.stopPropagation();
@@ -65,21 +65,21 @@ document.addEventListener('DOMContentLoaded', () => {
   const slides = document.querySelectorAll('.review-slide');
   const prevBtn = document.querySelector('.slider-btn-prev');
   const nextBtn = document.querySelector('.slider-btn-next');
-  
+
   if (slider && slides.length > 0) {
     let currentSlide = 0;
-    
+
     const updateSlider = () => {
       slider.style.transform = `translateX(-${currentSlide * 100}%)`;
     };
-    
+
     if (nextBtn) {
       nextBtn.addEventListener('click', () => {
         currentSlide = (currentSlide + 1) % slides.length;
         updateSlider();
       });
     }
-    
+
     if (prevBtn) {
       prevBtn.addEventListener('click', () => {
         currentSlide = (currentSlide - 1 + slides.length) % slides.length;
@@ -114,7 +114,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (container) {
         const shortText = container.querySelector('.review-text-short');
         const fullText = container.querySelector('.review-text-full');
-        
+
         if (fullText.style.display === 'inline' || fullText.style.display === 'block') {
           fullText.style.display = 'none';
           shortText.style.display = 'inline';
@@ -135,7 +135,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const stepIndicators = document.querySelectorAll('.step-indicator');
   const btnNext = document.querySelector('.btn-next');
   const btnBack = document.querySelector('.btn-back');
-  
+
   if (bookingSteps.length > 0) {
     let currentStep = 0;
     const bookingData = {
@@ -145,9 +145,9 @@ document.addEventListener('DOMContentLoaded', () => {
       name: '',
       phone: '',
       email: '',
+      gender: '',
       notes: '',
-      payment: 'upi', // default
-      fee: 300 // default
+      fee: 1 // default
     };
 
     // Update Navigation UI
@@ -204,18 +204,23 @@ document.addEventListener('DOMContentLoaded', () => {
         aptTypeCards.forEach(c => c.classList.remove('selected'));
         card.classList.add('selected');
         bookingData.type = card.dataset.type;
-        
+
         // Fee adjustment
         if (bookingData.type === 'tele-consultation') {
-          bookingData.fee = 500;
+          bookingData.fee = 200;
           document.getElementById('fee-item-name').textContent = 'Tele-Consultation Fee';
-          document.getElementById('fee-item-amount').textContent = '₹500';
-          document.getElementById('fee-total-amount').textContent = '₹500';
+          document.getElementById('fee-item-amount').textContent = '₹200';
+          document.getElementById('fee-total-amount').textContent = '₹200';
         } else {
-          bookingData.fee = 300;
+          bookingData.fee = 1;
           document.getElementById('fee-item-name').textContent = 'In-Clinic Consultation Fee';
-          document.getElementById('fee-item-amount').textContent = '₹300';
-          document.getElementById('fee-total-amount').textContent = '₹300';
+          document.getElementById('fee-item-amount').textContent = '₹1';
+          document.getElementById('fee-total-amount').textContent = '₹1';
+        }
+
+        // Re-fetch slots if date is selected
+        if (bookingData.date) {
+          generateSlots();
         }
       });
     });
@@ -234,7 +239,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const generateCalendar = (month, year) => {
       calendarMonthLabel.textContent = `${months[month]} ${year}`;
-      
+
       // Clear previous dates (except headers)
       const dateCells = calendarGrid.querySelectorAll('.cal-day, .cal-day-label');
       dateCells.forEach(cell => cell.remove());
@@ -268,16 +273,14 @@ document.addEventListener('DOMContentLoaded', () => {
         cell.textContent = day;
 
         const cellDate = new Date(year, month, day);
-        
-        // Disable past dates
-        if (cellDate.setHours(0,0,0,0) < today.setHours(0,0,0,0)) {
+
+        // Disable past dates and weekends (Sat/Sun)
+        if (cellDate.setHours(0, 0, 0, 0) < today.setHours(0, 0, 0, 0)) {
           cell.classList.add('disabled');
+        } else if (cellDate.getDay() === 0 || cellDate.getDay() === 6) {
+          cell.classList.add('disabled');
+          cell.classList.add('weekend-day');
         } else {
-          // Check Sunday
-          if (cellDate.getDay() === 0) {
-            cell.classList.add('sunday-day');
-          }
-          
           // Mark today
           if (day === today.getDate() && month === today.getMonth() && year === today.getFullYear()) {
             cell.classList.add('today');
@@ -294,13 +297,8 @@ document.addEventListener('DOMContentLoaded', () => {
             calendarGrid.querySelectorAll('.cal-day').forEach(c => c.classList.remove('selected'));
             cell.classList.add('selected');
             bookingData.date = formattedCellDate;
-            
-            // If Sunday, alert user or suggest morning hours
-            if (cellDate.getDay() === 0) {
-              alert("Please note: Sundays are by Appointment Only. Slot availability may vary.");
-            }
-            
-            generateSlots(cellDate.getDay() === 0);
+
+            generateSlots();
           });
         }
         calendarGrid.appendChild(cell);
@@ -336,54 +334,113 @@ document.addEventListener('DOMContentLoaded', () => {
 
     generateCalendar(displayMonth, displayYear);
 
-    // Step 3 Selection: Time Slots
+    // Helper to format "13:30:00" -> "01:30 PM"
+    const formatTime12h = (timeStr) => {
+      if (!timeStr) return '';
+      const parts = timeStr.split(':');
+      let h = parseInt(parts[0], 10);
+      const m = parts[1];
+      const ampm = h >= 12 ? 'PM' : 'AM';
+      h = h % 12;
+      if (h === 0) h = 12;
+      return `${String(h).padStart(2, '0')}:${m} ${ampm}`;
+    };
+
+    // Step 3 Selection: Time Slots (from Backend API)
     const slotsGrid = document.querySelector('.slots-container');
-    
-    const generateSlots = (isSunday = false) => {
+
+    const generateSlots = async () => {
+      if (!slotsGrid) return;
       slotsGrid.innerHTML = '';
-      
-      const weekdaySlots = [
-        '10:00 AM', '10:30 AM', '11:00 AM', '11:30 AM', '12:00 PM', '12:30 PM', '01:00 PM',
-        '04:30 PM', '05:00 PM', '05:30 PM', '06:00 PM', '06:30 PM', '07:00 PM', '07:30 PM', '08:00 PM'
-      ];
-      
-      const sundaySlots = [
-        '10:00 AM', '10:30 AM', '11:00 AM', '11:30 AM', '12:00 PM', '12:30 PM', '01:00 PM'
-      ];
 
-      const activeSlots = isSunday ? sundaySlots : weekdaySlots;
+      if (!bookingData.date) {
+        slotsGrid.innerHTML = '<p style="color: var(--text-muted); grid-column: 1 / -1; font-size: 0.9rem;">Please select a date to view available time slots.</p>';
+        return;
+      }
 
-      activeSlots.forEach(timeStr => {
-        const btn = document.createElement('div');
-        btn.className = 'slot-btn';
-        btn.textContent = timeStr;
-        
-        if (bookingData.time === timeStr) {
-          btn.classList.add('selected');
+      slotsGrid.innerHTML = `
+        <div class="slots-loading">
+          <div class="slots-spinner"></div>
+          <span>Fetching available slots...</span>
+        </div>
+      `;
+
+      const practitioner = 'HLC-PRAC-2026-00001';
+      const appointmentType = bookingData.type === 'tele-consultation' ? 'consultation_vc' : 'consultation';
+      const dateStr = bookingData.date;
+      const duration = 15;
+
+      const url = `https://b2b.medcortico.com/api/v1/appointments/slots/range?practitioner=${encodeURIComponent(practitioner)}&start_date=${dateStr}&end_date=${dateStr}&appointment_type=${encodeURIComponent(appointmentType)}&duration=${duration}`;
+
+      try {
+        const res = await fetch(url);
+        const data = await res.json();
+
+        slotsGrid.innerHTML = '';
+
+        const dayData = data.slots_by_date && data.slots_by_date[dateStr];
+        const availableSlots = (dayData && dayData.available_slots) || [];
+        const bookedSlots = (dayData && dayData.booked_slots) || [];
+
+        if (availableSlots.length === 0 && bookedSlots.length === 0) {
+          slotsGrid.innerHTML = '<p style="color: var(--text-muted); grid-column: 1 / -1; font-size: 0.9rem;">No slots available for the selected date.</p>';
+          return;
         }
 
-        btn.addEventListener('click', () => {
-          slotsGrid.querySelectorAll('.slot-btn').forEach(b => b.classList.remove('selected'));
-          btn.classList.add('selected');
-          bookingData.time = timeStr;
-        });
+        const availableList = availableSlots.map(s => ({ ...s, isBooked: false }));
+        const bookedList = bookedSlots.map(s => ({ ...s, isBooked: true }));
+        const allSlots = [...availableList, ...bookedList].sort((a, b) => a.start_time.localeCompare(b.start_time));
 
-        slotsGrid.appendChild(btn);
-      });
+        const now = new Date();
+
+        allSlots.forEach(slot => {
+          const btn = document.createElement('div');
+          const formattedTime = formatTime12h(slot.start_time);
+          btn.className = 'slot-btn';
+          btn.textContent = formattedTime;
+
+          // Parse slot time. Handle ISO string vs HH:mm:ss string
+          let slotDateTime;
+          if (slot.start_time && slot.start_time.includes('T')) {
+            slotDateTime = new Date(slot.start_time);
+          } else if (slot.start_time && dateStr) {
+            slotDateTime = new Date(`${dateStr}T${slot.start_time}`);
+          } else {
+            slotDateTime = new Date(slot.start_time);
+          }
+
+          const isPast = !isNaN(slotDateTime.getTime()) && slotDateTime < now;
+
+          if (slot.isBooked || isPast) {
+            btn.classList.add('disabled');
+            btn.title = slot.isBooked ? 'Slot Already Booked' : 'Slot Time Passed';
+          } else {
+            if (bookingData.time === formattedTime) {
+              btn.classList.add('selected');
+            }
+
+            btn.addEventListener('click', () => {
+              slotsGrid.querySelectorAll('.slot-btn').forEach(b => b.classList.remove('selected'));
+              btn.classList.add('selected');
+              bookingData.time = formattedTime;
+            });
+          }
+
+          slotsGrid.appendChild(btn);
+          btn.addEventListener('click', () => {
+            if (!slot.isBooked && !isPast) {
+              bookingData.rawTime = slot.start_time;
+            }
+          });
+        });
+      } catch (err) {
+        console.error('Error fetching appointment slots:', err);
+        slotsGrid.innerHTML = '<p style="color: var(--error-red, #ef4444); grid-column: 1 / -1; font-size: 0.9rem;">Unable to load time slots. Please ensure the backend server is running.</p>';
+      }
     };
 
     // Trigger initial slots populate
-    generateSlots(false);
-
-    // Step 5 Selection: Payment Method
-    const payMethodCards = document.querySelectorAll('.pay-method-card');
-    payMethodCards.forEach(card => {
-      card.addEventListener('click', () => {
-        payMethodCards.forEach(c => c.classList.remove('selected'));
-        card.classList.add('selected');
-        bookingData.payment = card.dataset.method;
-      });
-    });
+    generateSlots();
 
     // Validate Steps before moving forward
     const validateStep = () => {
@@ -406,8 +463,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const nameInput = document.getElementById('pt-name');
         const phoneInput = document.getElementById('pt-phone');
         const emailInput = document.getElementById('pt-email');
+        const genderInput = document.getElementById('pt-gender');
         const notesInput = document.getElementById('pt-notes');
-        
+
         if (!nameInput.value.trim()) {
           alert('Please enter your name.');
           nameInput.focus();
@@ -418,26 +476,38 @@ document.addEventListener('DOMContentLoaded', () => {
           phoneInput.focus();
           return false;
         }
-        
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailInput.value.trim() || !emailRegex.test(emailInput.value.trim())) {
+          alert('Please enter a valid email address.');
+          emailInput.focus();
+          return false;
+        }
+        if (!genderInput.value) {
+          alert('Please select your gender.');
+          genderInput.focus();
+          return false;
+        }
+
         bookingData.name = nameInput.value.trim();
         bookingData.phone = phoneInput.value.trim();
         bookingData.email = emailInput.value.trim();
+        bookingData.gender = genderInput.value;
         bookingData.notes = notesInput.value.trim();
       }
       return true;
     };
 
     // Navigation triggers
-    btnNext.addEventListener('click', () => {
+    btnNext.addEventListener('click', async () => {
       if (!validateStep()) return;
-      
-      currentStep++;
-      
-      // Prep Final Step data when stepping into Confirmation
-      if (currentStep === bookingSteps.length - 1) {
-        completeBookingFlow();
+
+      // Handle step before Confirmation (Pay & Confirm)
+      if (currentStep === bookingSteps.length - 2) {
+        await submitBookingApi();
+        return;
       }
-      
+
+      currentStep++;
       updateBookingUI();
     });
 
@@ -448,31 +518,63 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
 
-    // Complete Booking Process & Output Confirmation
-    const completeBookingFlow = () => {
-      const bId = 'KMDS-' + Math.floor(100000 + Math.random() * 900000);
-      bookingData.bookingId = bId;
+    // API submission and payment redirect
+    const submitBookingApi = async () => {
+      const originalText = btnNext.textContent;
+      btnNext.disabled = true;
+      btnNext.textContent = 'Processing...';
 
-      // Populate text nodes
-      document.getElementById('conf-id').textContent = bId;
-      document.getElementById('conf-type').textContent = bookingData.type === 'tele-consultation' ? 'Tele-Consultation (Virtual)' : 'In-Clinic Consultation';
-      
-      // Format Date nicely
-      const dateParts = bookingData.date.split('-');
-      const dObj = new Date(dateParts[0], dateParts[1] - 1, dateParts[2]);
-      const niceDate = dObj.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-      
-      document.getElementById('conf-date').textContent = niceDate;
-      document.getElementById('conf-time').textContent = bookingData.time;
-      document.getElementById('conf-name').textContent = bookingData.name;
-      document.getElementById('conf-phone').textContent = bookingData.phone;
-      document.getElementById('conf-method').textContent = bookingData.payment.toUpperCase();
+      let formattedPhone = bookingData.phone;
+      if (!formattedPhone.startsWith('+')) {
+        formattedPhone = '+91' + formattedPhone.replace(/^0+/, '');
+      }
 
-      // Configure WhatsApp button
-      const waBtn = document.getElementById('whatsapp-confirm-btn');
-      if (waBtn) {
-        const textMsg = `Hi Dr. Ashwini,%0A%0AI would like to confirm my dental appointment.%0A%0A*Booking Details:*%0A- *Appointment ID:* ${bId}%0A- *Type:* ${bookingData.type === 'tele-consultation' ? 'Tele-Consultation (Virtual)' : 'In-Clinic (Offline)'}%0A- *Date:* ${niceDate}%0A- *Time:* ${bookingData.time}%0A- *Patient Name:* ${bookingData.name}%0A- *Phone:* ${bookingData.phone}%0A%0APlease let me know if there are any updates. Thank you!`;
-        waBtn.href = `https://wa.me/917022839062?text=${textMsg}`;
+      const payload = {
+        customer: {
+          name: bookingData.name,
+          phone: formattedPhone,
+          email: bookingData.email,
+          gender: bookingData.gender
+        },
+        practitioner_id: 'HLC-PRAC-2026-00001',
+        appointment_date: bookingData.date,
+        appointment_time: bookingData.rawTime || bookingData.time,
+        appointment_type: bookingData.type === 'tele-consultation' ? 'consultation_vc' : 'consultation',
+        complaint: bookingData.notes || 'General consultation'
+      };
+
+      try {
+        const response = await fetch('https://b2b.medcortico.com/api/v1/appointments/book', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(payload)
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({}));
+          let msg = 'Failed to book appointment.';
+          if (errorData.detail) {
+            msg = typeof errorData.detail === 'object' ? JSON.stringify(errorData.detail) : errorData.detail;
+          } else if (errorData.message) {
+            msg = typeof errorData.message === 'object' ? JSON.stringify(errorData.message) : errorData.message;
+          }
+          throw new Error(msg);
+        }
+
+        const data = await response.json();
+        if (data && data.payment_url) {
+          window.location.href = data.payment_url;
+        } else {
+          alert('Booking processed, but no payment URL returned.');
+        }
+      } catch (err) {
+        console.error('Booking error:', err);
+        alert('Failed to process booking: ' + err.message);
+      } finally {
+        btnNext.disabled = false;
+        btnNext.textContent = originalText;
       }
     };
 
