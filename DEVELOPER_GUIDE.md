@@ -1,4 +1,4 @@
-# Doctor Appointment Booking Flow & Slots API — Developer & LLM Integration Guide
+# Doctor Appointment Booking Flow & Slots API - Developer & LLM Integration Guide
 
 This guide provides a comprehensive, self-contained reference for software engineers and LLM agents implementing or integrating the complete **Doctor Appointment Booking Flow** (including real-time slot fetching, disabling past/booked slots, step-by-step UI state management, and booking submission) into medical/clinic applications.
 
@@ -8,11 +8,11 @@ This guide provides a comprehensive, self-contained reference for software engin
 
 The booking flow follows a multi-step wizard state machine:
 
-1. **Step 1: Appointment Type Selection** — In-Clinic (`consultation`) vs. Tele-Consultation (`consultation_vc`).
-2. **Step 2: Date Selection** — Choose an appointment date (prevents past date selection).
-3. **Step 3: Time Slot Fetching & Display** — Query API range endpoint, parse available/booked slots, disable past & booked time slots, handle selection state.
-4. **Step 4: Patient Details** — Name, Phone (10-digit validation), Email, Gender, and Medical Notes.
-5. **Step 5: Payment & Confirmation** — Display booking summary, process payment method (e.g. Pay at Clinic / Online), and submit booking.
+1. **Step 1: Appointment Type Selection** - In-Clinic (`consultation`) vs. Tele-Consultation (`consultation_vc`).
+2. **Step 2: Date Selection** - Choose an appointment date (prevents past date selection).
+3. **Step 3: Time Slot Fetching & Display** - Query API range endpoint, parse available/booked slots, disable past & booked time slots, handle selection state.
+4. **Step 4: Patient Details** - Name, Phone (10-digit validation), Email, Gender, and Medical Notes.
+5. **Step 5: Payment & Confirmation** - Display booking summary, process payment method (e.g. Pay at Clinic / Online), and submit booking.
 
 ---
 

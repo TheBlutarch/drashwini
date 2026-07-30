@@ -617,27 +617,27 @@ document.addEventListener('DOMContentLoaded', () => {
       let score = Math.min(10, Math.max(1, Math.round((rawScore / 25) * 10)));
       if (hasRedFlag) score = 10;
 
-      let title = 'Plan a routine dental assessment';
-      let status = 'Lower urgency · Book within 1–2 weeks';
-      let copy = 'Your answers do not suggest an immediate warning sign, but persistent or recurring symptoms still deserve an examination. Early care may keep treatment simpler.';
+      let title = 'Plan a dental check-up';
+      let status = 'Lower urgency, book within 1 to 2 weeks';
+      let copy = 'Your answers do not point to an emergency. Still, if the pain keeps coming back, it is worth getting the tooth checked before it becomes harder to treat.';
       let color = '#0d9488';
 
       if (score >= 9 || hasRedFlag) {
-        title = 'Seek urgent professional care';
-        status = 'Urgent · Contact a dentist now';
+        title = 'Please get urgent help';
+        status = 'Urgent, contact a dentist now';
         copy = hasRedFlag
-          ? 'Your answers include a warning sign. Contact the clinic now. Trouble breathing or swallowing, rapidly spreading swelling, or swelling near the eye or neck requires immediate emergency medical care.'
-          : 'Your symptom pattern needs prompt assessment. Contact the clinic today so the source of pain or infection can be examined.';
+          ? 'You selected a serious warning sign. Contact the clinic now. If breathing or swallowing is difficult, swelling is spreading fast, or swelling is near the eye or neck, seek emergency medical care immediately.'
+          : 'Your answers suggest the tooth should be checked today so the source of pain or infection can be found.';
         color = '#dc2626';
       } else if (score >= 6) {
-        title = 'Arrange a prompt dental assessment';
-        status = 'High priority · Ideally within 24–48 hours';
-        copy = 'Your answers may fit significant inflammation, infection, or damage. An exam and X-ray can show whether the tooth is restorable and whether root canal treatment or another option is appropriate.';
+        title = 'Book a visit soon';
+        status = 'High priority, ideally within 24 to 48 hours';
+        copy = 'Your answers may fit a tooth infection, deep decay, or a damaged tooth. A dental exam and X-ray can show what treatment is possible.';
         color = '#ea580c';
       } else if (score >= 3) {
-        title = 'Book a dental assessment soon';
-        status = 'Moderate priority · Ideally within a few days';
-        copy = 'The symptoms should be checked before they worsen. If the tooth is restorable, earlier care may preserve more of it and keep more treatment options open.';
+        title = 'Book a check-up in the next few days';
+        status = 'Moderate priority, ideally within a few days';
+        copy = 'The symptoms should be checked before they get worse. Earlier care can make treatment simpler and may help save more of the tooth.';
         color = '#ca8a04';
       }
 
