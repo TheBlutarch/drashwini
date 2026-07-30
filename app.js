@@ -133,8 +133,8 @@ document.addEventListener('DOMContentLoaded', () => {
   // =========================================================================
   const bookingSteps = document.querySelectorAll('.booking-step');
   const stepIndicators = document.querySelectorAll('.step-indicator');
-  const btnNext = document.querySelector('.btn-next');
-  const btnBack = document.querySelector('.btn-back');
+  const btnNext = document.querySelector('.booking-nav-btns .btn-next');
+  const btnBack = document.querySelector('.booking-nav-btns .btn-back');
 
   if (bookingSteps.length > 0) {
     let currentStep = 0;
@@ -581,6 +581,19 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initialize UI
     updateBookingUI();
   }
+
+  // Shared footer credit
+  document.querySelectorAll('.footer-bottom').forEach(footerBottom => {
+    if (footerBottom.querySelector('.medcortico-credit')) return;
+
+    const credit = document.createElement('a');
+    credit.className = 'medcortico-credit';
+    credit.href = 'https://medcortico.com';
+    credit.target = '_blank';
+    credit.rel = 'noopener';
+    credit.textContent = 'Built with love by Medcortico';
+    footerBottom.appendChild(credit);
+  });
 
   // =========================================================================
   // 5. Tooth pain education quiz (resources.html)
